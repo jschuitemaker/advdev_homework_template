@@ -16,6 +16,10 @@ echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cl
 oc project ${GUID}-jenkins
 oc new-app -f ./Infrastructure/templates/jenkins.yaml -p GUID=${GUID}
 
+# the slave pod isn't being build after the bc is created... start manually..?
+oc start-build jenkins-slave-appdev
+
+# wait for it to be completed
 while : ; do
     oc get pod -n ${GUID}-jenkins | grep 'slave' | grep "Completed"
     if [ $? == "0" ]
