@@ -188,7 +188,7 @@ objects:
     labels:
       build: jenkins-slave-appdev
     name: jenkins-slave-appdev
-    namespace: ${NAMESPACE}
+    namespace: ${GUID}-jenkins
     resourceVersion: '17036'
     selfLink: >-
       /apis/build.openshift.io/v1/namespaces/b60e-jenkins/buildconfigs/jenkins-slave-appdev
