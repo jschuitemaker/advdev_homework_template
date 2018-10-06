@@ -16,6 +16,18 @@ echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cl
 oc project ${GUID}-jenkins
 oc new-app -f ./Infrastructure/templates/jenkins.yaml -p GUID=${GUID}
 
+while : ; do
+    oc get pod -n ${GUID}-jenkins | grep 'slave' | grep "Completed"
+    if [ $? == "0" ]
+      then
+        echo 'jenkins-slave-appdev build completed'
+        break
+      else
+        echo 'jenkins-slave-appdev building sleep 10'
+        sleep 10
+    fi
+done
+
 # Code to set up the Jenkins project to execute the
 # three pipelines.
 # This will need to also build the custom Maven Slave Pod
