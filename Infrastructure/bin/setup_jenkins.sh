@@ -12,6 +12,10 @@ REPO=$2
 CLUSTER=$3
 echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cluster ${CLUSTER}"
 
+# switch to the right project first 
+oc project ${GUID}-jenkins
+oc new-app -f ./Infrastructure/templates/jenkins.yaml -p GUID=${GUID}
+
 # Code to set up the Jenkins project to execute the
 # three pipelines.
 # This will need to also build the custom Maven Slave Pod
@@ -27,4 +31,3 @@ echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cl
 # * CLUSTER: the base url of the cluster used (e.g. na39.openshift.opentlc.com)
 
 # To be Implemented by Student
-oc new-app -f ./Infrastructure/templates/jenkins.yaml 
