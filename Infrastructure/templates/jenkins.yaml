@@ -179,6 +179,59 @@ objects:
       name: ${JENKINS_SERVICE_NAME}
     sessionAffinity: None
     type: ClusterIP
+
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    labels:
+      build: jenkins-slave-appdev
+    name: jenkins-slave-appdev
+    namespace: ${NAMESPACE}
+    resourceVersion: '17036'
+    selfLink: >-
+      /apis/build.openshift.io/v1/namespaces/b60e-jenkins/buildconfigs/jenkins-slave-appdev
+    uid: 2fe0dc02-c95b-11e8-991f-00155ddc3109
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: 'jenkins-slave-appdev:latest'
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      dockerfile: |-
+        FROM docker.io/openshift/jenkins-slave-maven-centos7:v3.9
+        USER root
+        RUN yum -y install skopeo apb && \yum clean all
+        USER user-builder
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: 'jenkins-slave-maven-centos7:v3.9'
+      type: Docker
+    successfulBuildsHistoryLimit: 5
+    triggers:
+      - github:
+          secret: 5btp1OFs1-fDGNwYxR44
+        type: GitHub
+      - generic:
+          secret: zFHmwdiLekAPKNMARai0
+        type: Generic
+      - type: ConfigChange
+      - imageChange:
+          lastTriggeredImageID: >-
+            docker.io/openshift/jenkins-slave-maven-centos7@sha256:4d0b0a6cf06eb78d36b651fd3f41e37fab09af3f0dc36553b72886db0929100d
+        type: ImageChange
+  status:
+    lastVersion: 1
+
 parameters:
 - description: The GUID  
   displayName: GUID
