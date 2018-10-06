@@ -189,10 +189,7 @@ objects:
       build: jenkins-slave-appdev
     name: jenkins-slave-appdev
     namespace: ${GUID}-jenkins
-    resourceVersion: '17036'
-    selfLink: >-
-      /apis/build.openshift.io/v1/namespaces/b60e-jenkins/buildconfigs/jenkins-slave-appdev
-    uid: 2fe0dc02-c95b-11e8-991f-00155ddc3109
+
   spec:
     failedBuildsHistoryLimit: 5
     nodeSelector: null
