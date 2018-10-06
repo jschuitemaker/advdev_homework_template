@@ -180,6 +180,39 @@ objects:
     sessionAffinity: None
     type: ClusterIP
 
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      build: jenkins-slave-appdev
+    name: jenkins-slave-maven-centos7
+    namespace: ${GUID}-jenkins
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+      - annotations:
+          openshift.io/imported-from: 'docker.io/openshift/jenkins-slave-maven-centos7:latest'
+        from:
+          kind: DockerImage
+          name: 'docker.io/openshift/jenkins-slave-maven-centos7:latest'
+        generation: 2
+        importPolicy: {}
+        name: latest
+        referencePolicy:
+          type: Source
+
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      build: jenkins-slave-appdev
+    name: jenkins-slave-appdev
+    namespace: ${GUID}-jenkins
+  spec:
+    lookupPolicy:
+      local: false
+
 - apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
@@ -202,7 +235,7 @@ objects:
     runPolicy: Serial
     source:
       dockerfile: |-
-        FROM docker.io/openshift/jenkins-slave-maven-centos7:v3.9
+        FROM docker.io/openshift/jenkins-slave-maven-centos7:latest
         USER root
         RUN yum -y install skopeo apb && \yum clean all
         USER user-builder
@@ -211,21 +244,9 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: 'jenkins-slave-maven-centos7:v3.9'
+          name: 'jenkins-slave-maven-centos7:latest'
       type: Docker
     successfulBuildsHistoryLimit: 5
-    triggers:
-      - github:
-          secret: 5btp1OFs1-fDGNwYxR44
-        type: GitHub
-      - generic:
-          secret: zFHmwdiLekAPKNMARai0
-        type: Generic
-      - type: ConfigChange
-      - imageChange:
-          lastTriggeredImageID: >-
-            docker.io/openshift/jenkins-slave-maven-centos7@sha256:4d0b0a6cf06eb78d36b651fd3f41e37fab09af3f0dc36553b72886db0929100d
-        type: ImageChange
   status:
     lastVersion: 1
 

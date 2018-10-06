@@ -14,9 +14,14 @@ echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cl
 
 # switch to the right project first 
 oc project ${GUID}-jenkins
+
+# create app from template, this will create everything we need
 oc new-app -f ./Infrastructure/templates/jenkins.yaml -p GUID=${GUID}
 
-# the slave pod isn't being build after the bc is created... start manually..?
+# wait for it to be completed, the imagestreams are not always there (even though oc says it is created)
+sleep 10
+
+# the slave pod isn't being build after the bc is created... don't know why - start manually.. :-/
 oc start-build jenkins-slave-appdev
 
 # wait for it to be completed

@@ -1,0 +1,219 @@
+apiVersion: v1
+kind: Template
+labels:
+  app: ${GUID}-nexus
+  template: ${GUID}-nexus-persistent-template
+metadata:
+  name: ${GUID}-nexus
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: nexus3
+    name: nexus3
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker.io/sonatype/${NEXUS_IMAGE_STREAM_TAG}
+      name: latest
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 12
+    labels:
+      app: nexus3
+    name: nexus3
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: nexus3
+      deploymentconfig: nexus3
+    strategy:
+      activeDeadlineSeconds: 21600
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: nexus3
+          deploymentconfig: nexus3
+      spec:
+        containers:
+        - image: sonatype/nexus3@sha256:19d186d5bc8be1ea4f7bae72756baa830e79bf20aae0e9e7b1a0c7d3ce7ac136
+          imagePullPolicy: Always
+          livenessProbe:
+            exec:
+              command:
+              - echo
+              - ok
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: nexus3
+          ports:
+          - containerPort: 8081
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /repository/maven-public/
+              port: 8081
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /nexus-data/
+            name: nexus3-volume-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: nexus3-volume-1
+          persistentVolumeClaim:
+            claimName: nexus-pvc
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - nexus3
+        from:
+          kind: ImageStreamTag
+          name: ${NEXUS_IMAGE_STREAM_TAG}
+          namespace: ${GUID}-nexus
+      type: ImageChange
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      haproxy.router.openshift.io/timeout: 4m
+      template.openshift.io/expose-uri: http://{.spec.host}{.spec.path}
+    labels:
+      app: nexus3
+    name: nexus-registry
+  spec:
+    tls:
+      termination: edge
+    to:
+      kind: Service
+      name: nexus-registry
+      weight: 100
+    wildcardPolicy: None
+
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      haproxy.router.openshift.io/timeout: 4m
+      template.openshift.io/expose-uri: http://{.spec.host}{.spec.path}
+    labels:
+      app: nexus3
+    name: nexus3
+  spec:
+    to:
+      kind: Service
+      name: nexus3
+      weight: 100
+    wildcardPolicy: None
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: nexus3
+    name: nexus-registry
+  spec:
+    ports:
+    - port: 5000
+      protocol: TCP
+      targetPort: 5000
+    selector:
+      app: nexus3
+      deploymentconfig: nexus3
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: nexus3
+    name: nexus3
+  spec:
+    ports:
+    - name: 8081-tcp
+      port: 8081
+      protocol: TCP
+      targetPort: 8081
+    selector:
+      app: nexus3
+      deploymentconfig: nexus3
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    finalizers:
+    - kubernetes.io/pvc-protection
+    name: nexus-pvc
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 4Gi
+  status: {}
+
+parameters:
+- description: The GUID  
+  displayName: GUID
+  name: GUID
+  value: xyz
+- description: The OpenShift Namespace where the Nexus ImageStream resides.
+  displayName: Nexus ImageStream Namespace
+  name: NAMESPACE
+  value: openshift
+- description: Name of the ImageStreamTag to be used for the Nexus image.
+  displayName: Nexus ImageStreamTag
+  name: NEXUS_IMAGE_STREAM_TAG
+  value: nexus3:latest

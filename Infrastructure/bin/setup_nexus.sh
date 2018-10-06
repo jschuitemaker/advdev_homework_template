@@ -9,6 +9,12 @@ fi
 GUID=$1
 echo "Setting up Nexus in project $GUID-nexus"
 
+# switch to the right project first 
+oc project ${GUID}-nexus
+
+# create app from template, this will create everything we need
+oc new-app -f ./Infrastructure/templates/nexus.yaml -p GUID=${GUID}
+
 # Code to set up the Nexus. It will need to
 # * Create Nexus
 # * Set the right options for the Nexus Deployment Config
