@@ -12,18 +12,18 @@ REPO=$2
 CLUSTER=$3
 echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cluster ${CLUSTER}"
 
-# switch to the right project first 
-oc project ${GUID}-jenkins
+# IMPORTANT: Switching to a project can lead to creating resources in other projects because of parallel pipelines.. yikes. 
+# Use -n flag for all oc commands
 
 # create app from template, this will create everything we need
-oc new-app -f ./Infrastructure/templates/jenkins.yaml -p GUID=${GUID}
+oc new-app -f ./Infrastructure/templates/jenkins.yaml -p GUID=${GUID} -n ${GUID}-jenkins
 
 # wait for it to be completed, the imagestreams are not always there (even though oc says it is created)
 echo 'wait for imagestream to become ready..'
 sleep 20
 
 # the slave pod isn't being build after the bc is created... don't know why - start manually.. :-/
-oc start-build jenkins-slave-appdev
+oc start-build jenkins-slave-appdev -n ${GUID}-jenkins
 
 # wait for it to be completed
 while : ; do

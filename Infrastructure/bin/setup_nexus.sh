@@ -9,11 +9,11 @@ fi
 GUID=$1
 echo "Setting up Nexus in project $GUID-nexus"
 
-# switch to the right project first 
-oc project ${GUID}-nexus
+# IMPORTANT: Switching to a project can lead to creating resources in other projects because of parallel pipelines.. yikes. 
+# Use -n flag for all oc commands
 
 # create app from template, this will create everything we need
-oc new-app -f ./Infrastructure/templates/nexus.yaml -p GUID=${GUID}
+oc new-app -f ./Infrastructure/templates/nexus.yaml -p GUID=${GUID} -n ${GUID}-nexus
 
 while : ; do
   echo "Checking if Nexus is Ready..."
@@ -31,7 +31,7 @@ rm -f setup_nexus3.sh
 
 
 # this will set the default URL on the openshift console to point to the Nexus console instead of the registry
-oc annotate route nexus3 console.alpha.openshift.io/overview-app-route=true
-oc annotate route nexus-registry console.alpha.openshift.io/overview-app-route=false
+oc annotate route nexus3 console.alpha.openshift.io/overview-app-route=true -n ${GUID}-nexus
+oc annotate route nexus-registry console.alpha.openshift.io/overview-app-route=false -n ${GUID}-nexus
 
 
