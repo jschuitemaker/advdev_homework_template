@@ -72,6 +72,7 @@ pipeline {
       steps {
         echo "Cleanup - deleting all projects for GUID=${GUID}"
         sh "./Infrastructure/bin/cleanup.sh ${GUID}"
+        sleep 15
       }
     }
 
