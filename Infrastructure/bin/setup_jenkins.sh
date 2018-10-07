@@ -19,7 +19,8 @@ oc project ${GUID}-jenkins
 oc new-app -f ./Infrastructure/templates/jenkins.yaml -p GUID=${GUID}
 
 # wait for it to be completed, the imagestreams are not always there (even though oc says it is created)
-sleep 10
+echo 'wait for imagestream to become ready..'
+sleep 20
 
 # the slave pod isn't being build after the bc is created... don't know why - start manually.. :-/
 oc start-build jenkins-slave-appdev

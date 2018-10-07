@@ -14,11 +14,10 @@ oc project ${GUID}-nexus
 
 # create app from template, this will create everything we need
 oc new-app -f ./Infrastructure/templates/nexus.yaml -p GUID=${GUID}
-sleep 10
 
 while : ; do
   echo "Checking if Nexus is Ready..."
-  oc get pod -n ${GUID}-nexus|grep -v running|grep "1/1"
+  oc get pod -n ${GUID}-nexus|grep '\-2\-'|grep -v deploy|grep "1/1"
   [[ "$?" == "1" ]] || break
   echo "...no. Sleeping 10 seconds."
   sleep 10
