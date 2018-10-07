@@ -15,9 +15,12 @@ echo "Setting up Nexus in project $GUID-nexus"
 # create app from template, this will create everything we need
 oc new-app -f ./Infrastructure/templates/nexus.yaml -p GUID=${GUID} -n ${GUID}-nexus
 
+# wait till deployment pod is done and nexus is running. 
+# note: -l app=nexus3 |grep -v deploy is probably too much because the deploy pod is not labeled 'nexus3'. -l app=nexus3 should do the trick
+
 while : ; do
   echo "Checking if Nexus is Ready..."
-  oc get pod -n ${GUID}-nexus|grep '\-2\-'|grep -v deploy|grep "1/1"
+  oc get pod -n b60e-nexus -l app=nexus3 |grep -v deploy|grep "1/1"
   [[ "$?" == "1" ]] || break
   echo "...no. Sleeping 10 seconds."
   sleep 10

@@ -56,7 +56,7 @@ objects:
           deploymentconfig: nexus3
       spec:
         containers:
-        - image: sonatype/nexus3@sha256:19d186d5bc8be1ea4f7bae72756baa830e79bf20aae0e9e7b1a0c7d3ce7ac136
+        - image: sonatype/nexus3
           imagePullPolicy: Always
           livenessProbe:
             exec:
