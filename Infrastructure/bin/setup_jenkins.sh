@@ -16,7 +16,7 @@ echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cl
 # Use -n flag for all oc commands
 
 # create app from template, this will create everything we need
-oc new-app -f ./Infrastructure/templates/jenkins.yaml -p GUID=${GUID} -n ${GUID}-jenkins
+oc new-app -f ./Infrastructure/templates/jenkins.yaml -p GUID=${GUID} -p CLUSTER=${CLUSTER} -p REPO=${REPO} -n ${GUID}-jenkins
 
 # wait for it to be completed, the imagestreams are not always there (even though oc says it is created)
 echo 'wait for imagestream to become ready..'
