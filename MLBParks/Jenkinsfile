@@ -1,5 +1,5 @@
 // Jenkinsfile for MLBParks
-// TODO change 172.30.1.1:5000 to 
+// TODO change 172.30.1.1:5000 to docker-registry.default.svc
 podTemplate(
   label: "skopeo-pod",
   cloud: "openshift",
@@ -17,7 +17,9 @@ podTemplate(
     echo "GUID: ${GUID}"
     echo "CLUSTER: ${CLUSTER}"
 
-    def mvnCmd = "mvn -s ./nexus_openshift_settings.xml"
+    def groupId    = getGroupIdFromPom("./MLBParks/pom.xml")
+    def artifactId = getArtifactIdFromPom("./MLBParks/pom.xml")
+    def version    = getVersionFromPom("./MLBParks/pom.xml")
 
     // Checkout Source Code
     stage('Checkout Source') {
@@ -25,10 +27,27 @@ podTemplate(
       checkout scm
      }
 
-    // Your Pipeline Code goes here. Make sure to use the ${GUID} and ${CLUSTER} parameters where appropriate
+     stage('Setup') {
+       // setup the nexus_settings so it reflects our GUID and CLUSTER args
+        sh "pwd"
+
+        sh "ls"
+
+        sh "cp ./nexus_settings.xml ./MLBParks/"
+
+        sh "sed -i 's/GUID/${GUID}/' ./MLBParks/nexus_settings.xml"
+
+        sh "sed -i 's/CLUSTER/${CLUSTER}/' ./MLBParks/nexus_settings.xml"
+
+     }
+
+    // Set the tag for the development image: version + build number
+    def devTag  = "${version}-${BUILD_NUMBER}"
+    // Set the tag for the production image: version
+    def prodTag = "${version}"
+    def mvnCmd = "mvn -s ./MLBParks/nexus_openshift_settings.xml"
+
     // You need to build the application in directory `MLBParks`.
-    // Also copy "../nexus_settings.xml" to your build directory
-    // and replace 'GUID' in the file with your ${GUID} to point to >your< Nexus instance
  
   }
 }
