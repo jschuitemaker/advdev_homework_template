@@ -46,7 +46,7 @@ podTemplate(
       stage('Code Analysis') {
         echo "Running Code Analysis"
         dir("MLBParks") {
-          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.svc:9000/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
+          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://172.30.30.73:9000/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
         }
       }    
 
