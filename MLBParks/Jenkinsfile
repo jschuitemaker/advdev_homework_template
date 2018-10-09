@@ -25,15 +25,10 @@ podTemplate(
 
     // setup the nexus_settings so it reflects our GUID and CLUSTER args
     sh "pwd"
-
     sh "ls"
-
     sh "cp ./nexus_settings.xml ./MLBParks/"
-
     sh "sed -i 's/GUID/${GUID}/' ./MLBParks/nexus_settings.xml"
-
     sh "sed -i 's/CLUSTER/${CLUSTER}/' ./MLBParks/nexus_settings.xml"
-
     sh "cat ./MLBParks/nexus_settings.xml"
 
     def mvnCmd = "mvn -s nexus_settings.xml"
@@ -52,8 +47,9 @@ podTemplate(
     // Do not run tests in this step
     stage('Build war') {
       echo "Building version ${devTag}"
-
-      sh "${mvnCmd} clean package -DskipTests -Ddir=./MLBParks"
+      sh "cd MLBParks"
+      sh "ls"
+      sh "${mvnCmd} clean package -DskipTests"
     }
  
   }
