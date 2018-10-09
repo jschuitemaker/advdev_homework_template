@@ -91,7 +91,7 @@ podTemplate(
         // sh "oc set image dc/mlbparks mlbparks=docker-registry.default.svc:5000/${GUID}-parks-dev/mlbparks:${devTag} -n ${GUID}-parks-dev"
         // Because above set image was not working (it triggered a deploy but with same image :( using this instead)
         sh "oc set triggers dc/mlbparks --remove-all -n ${GUID}-parks-dev"
-        sh "oc set triggers dc/mlbparks --from-image=mlbparks:1.0-37 --containers=mlbparks ${GUID}-parks-dev" 
+        sh "oc set triggers dc/mlbparks --from-image=mlbparks:${devTag} --containers=mlbparks -n ${GUID}-parks-dev" 
       // Deploy the development application.
       openshiftDeploy depCfg: 'mlbparks', namespace: '${GUID}-parks-dev', verbose: 'false', waitTime: '20', waitUnit: 'min'
       openshiftVerifyDeployment depCfg: 'mlbparks', namespace: '${GUID}-parks-dev', replicaCount: '1', verbose: 'false', verifyReplicaCount: 'false', waitTime: '', waitUnit: 'sec'
