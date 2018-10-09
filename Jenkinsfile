@@ -72,8 +72,8 @@ pipeline {
       steps {
         echo "Cleanup - deleting all projects for GUID=${GUID}"
         sh "./Infrastructure/bin/cleanup.sh ${GUID}"
-        echo "Waiting for 30secs"
-        sleep 30
+        echo "Waiting for 60secs"
+        sleep 60
       }
     }
 

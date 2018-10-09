@@ -27,6 +27,7 @@ oc new-app -e MONGODB_USER=mongodb -e MONGODB_PASSWORD=mongodb -e MONGODB_DATABA
 # Create build configurations in the development project.
 # TODO - Will need to change the imagestream name back to jboss-eap70-openshift:1.7
 oc new-build --binary=true --name="mlbparks" wildfly-120-centos7 -n ${GUID}-parks-dev
+#oc new-build --binary=true --name="nationalparks" wildfly-120-centos7 -n ${GUID}-parks-dev
 
 # Create deployment configurations in both the development and production projects.
 oc new-app ${GUID}-parks-dev/mlbparks:0.0-0 --name=mlbparks --allow-missing-imagestream-tags=true -n ${GUID}-parks-dev
