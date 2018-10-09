@@ -42,6 +42,14 @@ podTemplate(
       // Set the tag for the production image: version
       def prodTag = "${version}"
 
+      // Code analysis
+      stage('Unit Tests') {
+        echo "Running Code Analysis"
+        dir("MLBParks") {
+          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.svc.local/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
+        }
+      }    
+
       // You need to build the application in directory `MLBParks`.
       // Using Maven build the war file
       // Do not run tests in this step
@@ -63,7 +71,7 @@ podTemplate(
       stage('Unit Tests') {
         echo "Running Code Analysis"
         dir("MLBParks") {
-          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.svc/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
+          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.svc.local/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
         }
       }    
   
