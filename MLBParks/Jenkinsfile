@@ -17,36 +17,34 @@ podTemplate(
     echo "GUID: ${GUID}"
     echo "CLUSTER: ${CLUSTER}"
 
-    def groupId    = getGroupIdFromPom("./MLBParks/pom.xml")
-    def artifactId = getArtifactIdFromPom("./MLBParks/pom.xml")
-    def version    = getVersionFromPom("./MLBParks/pom.xml")
-
     // Checkout Source Code
     stage('Checkout Source') {
       // should be enough, because we already set the git location in the pipeline definition
       checkout scm
      }
 
-     stage('Setup') {
-       // setup the nexus_settings so it reflects our GUID and CLUSTER args
-        sh "pwd"
+    // setup the nexus_settings so it reflects our GUID and CLUSTER args
+    sh "pwd"
 
-        sh "ls"
+    sh "ls"
 
-        sh "cp ./nexus_settings.xml ./MLBParks/"
+    sh "cp ./nexus_settings.xml ./MLBParks/"
 
-        sh "sed -i 's/GUID/${GUID}/' ./MLBParks/nexus_settings.xml"
+    sh "sed -i 's/GUID/${GUID}/' ./MLBParks/nexus_settings.xml"
 
-        sh "sed -i 's/CLUSTER/${CLUSTER}/' ./MLBParks/nexus_settings.xml"
+    sh "sed -i 's/CLUSTER/${CLUSTER}/' ./MLBParks/nexus_settings.xml"
 
-     }
 
     // Set the tag for the development image: version + build number
     def devTag  = "${version}-${BUILD_NUMBER}"
-    
+
     // Set the tag for the production image: version
     def prodTag = "${version}"
     def mvnCmd = "mvn -s ./MLBParks/nexus_openshift_settings.xml"
+
+    def groupId    = getGroupIdFromPom("./MLBParks/pom.xml")
+    def artifactId = getArtifactIdFromPom("./MLBParks/pom.xml")
+    def version    = getVersionFromPom("./MLBParks/pom.xml")
 
     // You need to build the application in directory `MLBParks`.
  
