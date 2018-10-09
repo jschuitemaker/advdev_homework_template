@@ -48,6 +48,13 @@ podTemplate(
     def prodTag = "${version}"
 
     // You need to build the application in directory `MLBParks`.
+    // Using Maven build the war file
+    // Do not run tests in this step
+    stage('Build war') {
+      echo "Building version ${devTag}"
+
+      sh "${mvnCmd} clean package -DskipTests"
+    }
  
   }
 }
