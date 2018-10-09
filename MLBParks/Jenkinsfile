@@ -43,6 +43,7 @@ podTemplate(
 
     // Set the tag for the development image: version + build number
     def devTag  = "${version}-${BUILD_NUMBER}"
+    
     // Set the tag for the production image: version
     def prodTag = "${version}"
     def mvnCmd = "mvn -s ./MLBParks/nexus_openshift_settings.xml"
