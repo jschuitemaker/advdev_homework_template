@@ -16,6 +16,7 @@ podTemplate(
     node('skopeo-pod') {
       echo "GUID: ${GUID}"
       echo "CLUSTER: ${CLUSTER}"
+      sh "ping docker-registry.default.svc"
 
       // Checkout Source Code
       stage('Checkout Source') {
@@ -43,10 +44,10 @@ podTemplate(
       def prodTag = "${version}"
 
       // Code analysis
-      stage('Unit Tests') {
+      stage('Code Analysis') {
         echo "Running Code Analysis"
         dir("MLBParks") {
-          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.svc.local/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
+          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.svc:9000/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
         }
       }    
 
@@ -65,13 +66,6 @@ podTemplate(
         echo "Running Unit Tests"
         dir("MLBParks") {
           sh "${mvnCmd} test"
-        }
-      }    
-      // Code analysis
-      stage('Unit Tests') {
-        echo "Running Code Analysis"
-        dir("MLBParks") {
-          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.svc.local/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
         }
       }    
   
