@@ -46,10 +46,10 @@ podTemplate(
     // Using Maven build the war file
     // Do not run tests in this step
     stage('Build war') {
+      dir("MLBParks") {
+        sh "${mvnCmd} clean package -DskipTests"
+      }
       echo "Building version ${devTag}"
-      sh "cd MLBParks"
-      sh "ls"
-      sh "${mvnCmd} clean package -DskipTests"
     }
  
   }
