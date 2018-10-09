@@ -53,7 +53,7 @@ podTemplate(
     stage('Build war') {
       echo "Building version ${devTag}"
 
-      sh "${mvnCmd} clean package -DskipTests"
+      sh "${mvnCmd} clean package -DskipTests -Ddir=./MLBParks"
     }
  
   }
