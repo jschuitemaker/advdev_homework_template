@@ -42,7 +42,7 @@ oc set probe dc/mlbparks --readiness --failure-threshold 3 --initial-delay-secon
 oc expose dc/mlbparks --port 8080 -n ${GUID}-parks-dev
 
 # expose the above service as a route and mark it as type 'parksmap-backend' so the UI can discover this service
-oc expose svc/mlbparks --labels=type=parksmap-backend 
+oc expose svc/mlbparks --labels=type=parksmap-backend -n ${GUID}-parks-dev
 
 # The endpoint `/ws/data/load/` creates the data in the MongoDB database and will need to be called (preferably with a post-deployment-hook)
 # once the Pod is running.
