@@ -12,62 +12,62 @@ podTemplate(
       resourceLimitMemory: "2Gi"
     )
   ]
-  ) 
+  ) {
+    node('skopeo-pod') {
+      echo "GUID: ${GUID}"
+      echo "CLUSTER: ${CLUSTER}"
+
+      // Checkout Source Code
+      stage('Checkout Source') {
+        // should be enough, because we already set the git location in the pipeline definition
+        checkout scm
+      }
+
+      // setup the nexus_settings so it reflects our GUID and CLUSTER args
+      sh "pwd"
+      sh "ls"
+      sh "cp ./nexus_settings.xml ./MLBParks/"
+      sh "sed -i 's/GUID/${GUID}/' ./MLBParks/nexus_settings.xml"
+      sh "sed -i 's/CLUSTER/${CLUSTER}/' ./MLBParks/nexus_settings.xml"
+      sh "cat ./MLBParks/nexus_settings.xml"
+
+      def mvnCmd = "mvn -s nexus_settings.xml"
+
+      def groupId    = getGroupIdFromPom("./MLBParks/pom.xml")
+      def artifactId = getArtifactIdFromPom("./MLBParks/pom.xml")
+      def version    = getVersionFromPom("./MLBParks/pom.xml")
+
+      // Set the tag for the development image: version + build number
+      def devTag  = "${version}-${BUILD_NUMBER}"
+      // Set the tag for the production image: version
+      def prodTag = "${version}"
+
+      // You need to build the application in directory `MLBParks`.
+      // Using Maven build the war file
+      // Do not run tests in this step
+      stage('Build war') {
+        dir("MLBParks") {
+          sh "${mvnCmd} clean package -DskipTests"
+        }
+        echo "Building version ${devTag}"
+      }
+
+      // Using Maven run the unit tests
+      stage('Unit Tests') {
+        echo "Running Unit Tests"
+        dir("MLBParks") {
+          sh "${mvnCmd} test"
+        }
+      }    
+      // Code analysis
+      stage('Unit Tests') {
+        echo "Running Code Analysis"
+        dir("MLBParks") {
+          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.svc/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
+        }
+      }    
   
-  node('skopeo-pod') {
-    echo "GUID: ${GUID}"
-    echo "CLUSTER: ${CLUSTER}"
-
-    // Checkout Source Code
-    stage('Checkout Source') {
-      // should be enough, because we already set the git location in the pipeline definition
-      checkout scm
-     }
-
-    // setup the nexus_settings so it reflects our GUID and CLUSTER args
-    sh "pwd"
-    sh "ls"
-    sh "cp ./nexus_settings.xml ./MLBParks/"
-    sh "sed -i 's/GUID/${GUID}/' ./MLBParks/nexus_settings.xml"
-    sh "sed -i 's/CLUSTER/${CLUSTER}/' ./MLBParks/nexus_settings.xml"
-    sh "cat ./MLBParks/nexus_settings.xml"
-
-    def mvnCmd = "mvn -s nexus_settings.xml"
-
-    def groupId    = getGroupIdFromPom("./MLBParks/pom.xml")
-    def artifactId = getArtifactIdFromPom("./MLBParks/pom.xml")
-    def version    = getVersionFromPom("./MLBParks/pom.xml")
-
-    // Set the tag for the development image: version + build number
-    def devTag  = "${version}-${BUILD_NUMBER}"
-    // Set the tag for the production image: version
-    def prodTag = "${version}"
-
-    // You need to build the application in directory `MLBParks`.
-    // Using Maven build the war file
-    // Do not run tests in this step
-    stage('Build war') {
-      dir("MLBParks") {
-        sh "${mvnCmd} clean package -DskipTests"
-      }
-      echo "Building version ${devTag}"
-    }
-
-    // Using Maven run the unit tests
-    stage('Unit Tests') {
-      echo "Running Unit Tests"
-      dir("MLBParks") {
-        sh "${mvnCmd} test"
-      }
-    }    
-    // Code analysis
-    stage('Unit Tests') {
-      echo "Running Code Analysis"
-      dir("MLBParks") {
-        sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.svc/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
-      }
-    }    
- 
+  } 
 }
 
 // Convenience Functions to read variables from the pom.xml
