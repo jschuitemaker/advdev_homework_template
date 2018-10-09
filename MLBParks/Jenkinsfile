@@ -1,4 +1,5 @@
 // Jenkinsfile for MLBParks
+// TODO change 172.30.1.1:5000 to 
 podTemplate(
   label: "skopeo-pod",
   cloud: "openshift",
@@ -15,6 +16,14 @@ podTemplate(
   node('skopeo-pod') {
     echo "GUID: ${GUID}"
     echo "CLUSTER: ${CLUSTER}"
+
+    def mvnCmd = "mvn -s ./nexus_openshift_settings.xml"
+
+    // Checkout Source Code
+    stage('Checkout Source') {
+      // should be enough, because we already set the git location in the pipeline definition
+      checkout scm
+     }
 
     // Your Pipeline Code goes here. Make sure to use the ${GUID} and ${CLUSTER} parameters where appropriate
     // You need to build the application in directory `MLBParks`.
