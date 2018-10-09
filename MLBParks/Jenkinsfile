@@ -42,7 +42,7 @@ podTemplate(
       // Set the tag for the production image: version
       def prodTag = "${version}"
 
-\     // Using Maven build the war file
+      // Using Maven build the war file
       // Do not run tests in this step
       stage('Build war') {
         dir("MLBParks") {
