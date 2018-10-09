@@ -34,12 +34,13 @@ podTemplate(
 
     sh "sed -i 's/CLUSTER/${CLUSTER}/' ./MLBParks/nexus_settings.xml"
 
+    sh "cat ./MLBParks/nexus_settings.xml"
 
     // Set the tag for the development image: version + build number
-    def devTag  = "${version}-${BUILD_NUMBER}"
+    //def devTag  = "${version}-${BUILD_NUMBER}"
 
     // Set the tag for the production image: version
-    def prodTag = "${version}"
+    //def prodTag = "${version}"
     def mvnCmd = "mvn -s ./MLBParks/nexus_openshift_settings.xml"
 
     def groupId    = getGroupIdFromPom("./MLBParks/pom.xml")
