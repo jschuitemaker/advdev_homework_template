@@ -42,8 +42,7 @@ podTemplate(
       // Set the tag for the production image: version
       def prodTag = "${version}"
 
-      // You need to build the application in directory `MLBParks`.
-      // Using Maven build the war file
+\     // Using Maven build the war file
       // Do not run tests in this step
       stage('Build war') {
         dir("MLBParks") {
@@ -60,14 +59,21 @@ podTemplate(
         }
       }    
   
-        // Code analysis
+      // Code analysis
       stage('Code Analysis') {
         echo "Running Code Analysis"
         dir("MLBParks") {
-          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube.${GUID}-sonarqube.svc:9000/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
+          sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube.${GUID}-sonarqube.${CLUSTER}:9000/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
         }
       }    
 
+      // Publish the built war file to Nexus
+      stage('Publish to Nexus') {
+        echo "Publish to Nexus"
+        dir("MLBParks") {
+          sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3.${GUID}-nexus.${CLUSTER}:8081/repository/releases"
+        }
+      }
   } 
 }
 
