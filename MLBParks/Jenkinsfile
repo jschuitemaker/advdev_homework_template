@@ -16,7 +16,6 @@ podTemplate(
     node('skopeo-pod') {
       echo "GUID: ${GUID}"
       echo "CLUSTER: ${CLUSTER}"
-      sh "ping docker-registry.default.svc"
 
       // Checkout Source Code
       stage('Checkout Source') {
