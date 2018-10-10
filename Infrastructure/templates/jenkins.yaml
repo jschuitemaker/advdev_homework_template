@@ -268,6 +268,24 @@ objects:
             value: ${GUID}
           - name: CLUSTER
             value: ${CLUSTER}
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: "nationalparks-pipeline"
+  spec:
+    source:
+      contextDir: Nationalparks
+      type: Git
+      git:
+        uri: ${REPO}
+        ref: "master"
+    strategy:
+      jenkinsPipelineStrategy:
+        env:
+          - name: GUID
+            value: ${GUID}
+          - name: CLUSTER
+            value: ${CLUSTER}
 
 parameters:
 - description: The GUID  
