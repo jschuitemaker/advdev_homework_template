@@ -94,7 +94,7 @@ objects:
           volumeMounts:
           - mountPath: /nexus-data/
             name: nexus3-volume-1
-        dnsPolicy: ClusterFirst
+        dnsPolicy: ClusterFirst*
         restartPolicy: Always
         schedulerName: default-scheduler
         securityContext: {}
