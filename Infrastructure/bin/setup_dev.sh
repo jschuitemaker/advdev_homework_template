@@ -44,7 +44,7 @@ oc set deployment-hook dc/mlbparks  -n ${GUID}-parks-dev --post -c mlbparks --fa
 # NATIONALPARKS--------------
 # Create build configurations in the development project.
 # TODO - Will need to change the imagestream name back to redhat-openjdk18-openshift:1.2
-oc new-build --binary=true --name="nationalparks" redhat-openjdk18-openshift:latest -n ${GUID}-parks-dev
+oc new-build --binary=true --name="nationalparks" openjdk18-openshift:latest -n ${GUID}-parks-dev
 
 # Create deployment configurations in both the development and production projects.
 oc new-app ${GUID}-parks-dev/nationalparks:0.0-0 --name=nationalparks --allow-missing-imagestream-tags=true -n ${GUID}-parks-dev
@@ -71,7 +71,7 @@ oc set deployment-hook dc/nationalparks -n ${GUID}-parks-dev --post -c nationalp
 # PARKSMAP --------------
 # Create build configurations in the development project.
 # TODO - Will need to change the imagestream name back to redhat-openjdk18-openshift:1.2
-oc new-build --binary=true --name="parksmap" redhat-openjdk18-openshift:latest -n ${GUID}-parks-dev
+oc new-build --binary=true --name="parksmap" openjdk18-openshift:latest -n ${GUID}-parks-dev
 
 # Create deployment configurations in both the development and production projects.
 oc new-app ${GUID}-parks-dev/parksmap:0.0-0 --name=parksmap --allow-missing-imagestream-tags=true -n ${GUID}-parks-dev
