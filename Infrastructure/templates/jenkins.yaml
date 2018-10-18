@@ -286,7 +286,26 @@ objects:
             - name: GUID
               value: ${GUID}
             - name: CLUSTER
-              value: ${CLUSTER}              
+              value: ${CLUSTER}   
+
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      name: "parksmap-pipeline"
+    spec:
+      source:
+        contextDir: ParksMap
+        type: Git
+        git:
+          uri: ${REPO}
+          ref: "master"
+      strategy:
+        jenkinsPipelineStrategy:
+          env:
+            - name: GUID
+              value: ${GUID}
+            - name: CLUSTER
+              value: ${CLUSTER}
 
 parameters:
 - description: The GUID  
