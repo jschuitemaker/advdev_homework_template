@@ -13,7 +13,8 @@ echo "Setting up Parks Development Environment in project ${GUID}-parks-dev"
 oc policy add-role-to-user edit system:serviceaccount:${GUID}-jenkins:jenkins -n  ${GUID}-parks-dev
 
 # Set up a MongoDB database in the development project. (see README in MLBPARKS)
-oc new-app -e MONGODB_USER=mongodb -e MONGODB_PASSWORD=mongodb -e MONGODB_DATABASE=parks -e MONGODB_ADMIN_PASSWORD=mongodb --name=mongodb registry.access.redhat.com/rhscl/mongodb-34-rhel7:latest -n ${GUID}-parks-dev
+# todo must use specific registry?! not sure.. see labs
+oc new-app -e MONGODB_USER=mongodb -e MONGODB_PASSWORD=mongodb -e MONGODB_DATABASE=parks -e MONGODB_ADMIN_PASSWORD=mongodb --name=mongodb mongodb -n ${GUID}-parks-dev
 
 # MLBPARKS--------------
 # Create build configurations in the development project.
@@ -51,7 +52,7 @@ oc new-app ${GUID}-parks-dev/nationalparks:0.0-0 --name=nationalparks --allow-mi
 
 # Configure the applications using ConfigMaps.
 #cat ./Infrastructure/environments/MongoDB-dev.env  <(echo) ./Infrastructure/environments/Nationalparks-dev.env > ./Nationalparks-dev.map
-oc create configmap nationalparks-config --from-env-file./Infrastructure/environments/MongoDB-dev.env -n ${GUID}-parks-dev
+oc create configmap nationalparks-config --from-env-file=./Infrastructure/environments/MongoDB-dev.env -n ${GUID}-parks-dev
 oc set env dc/nationalparks --from=configmap/nationalparks-config -n ${GUID}-parks-dev
 oc set env dc/nationalparks APPNAME="National Parks (Dev)"
 oc set probe dc/nationalparks --liveness --failure-threshold 5 --initial-delay-seconds 30 -- echo ok -n ${GUID}-parks-dev
