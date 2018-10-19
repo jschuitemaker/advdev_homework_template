@@ -134,6 +134,9 @@ pipeline {
       }
     }
     stage("First Pipeline Runs (from Green to Blue)") {
+      when {
+        environment name: 'SCRATCH', value: 'true'
+      }
       failFast true
       parallel {
         stage('First Pipeline run for Nationalparks Service') {
