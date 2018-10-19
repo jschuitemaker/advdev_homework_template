@@ -19,16 +19,16 @@ oc new-app -e MONGODB_USER=mongodb -e MONGODB_PASSWORD=mongodb -e MONGODB_DATABA
 # MLBPARKS--------------
 # Create build configurations in the development project.
 # TODO - Will need to change the imagestream name back to jboss-eap70-openshift:1.7
-    oc new-build --binary=true --name="mlbparks" wildfly -n ${GUID}-parks-dev
+oc new-build --binary=true --name="mlbparks" wildfly -n ${GUID}-parks-dev
 
 # Create deployment configurations in both the development and production projects.
 oc new-app ${GUID}-parks-dev/mlbparks:0.0-0 --name=mlbparks --allow-missing-imagestream-tags=true -n ${GUID}-parks-dev
 
 # Configure the applications using ConfigMaps.
-#cat ./Infrastructure/environments/MongoDB-dev.env  <(echo) ./Infrastructure/environments/MLBParks-dev.env > ./MLBParks-dev.map
-oc create configmap mlbparks-config --from-env-file=./Infrastructure/environments/MongoDB-dev.env -n ${GUID}-parks-dev
+cat ./Infrastructure/environments/MongoDB-dev.env  <(echo) ./Infrastructure/environments/MLBParks-dev.env > ./MLBParks-dev.map
+oc create configmap mlbparks-config --from-env-file=./MLBParks-dev.map -n ${GUID}-parks-dev
 oc set env dc/mlbparks --from=configmap/mlbparks-config -n ${GUID}-parks-dev
-oc set env dc/mlbparks APPNAME="MLB Parks (Dev)"
+#oc set env dc/mlbparks APPNAME="MLB Parks (Dev)"
 oc set probe dc/mlbparks --liveness --failure-threshold 5 --initial-delay-seconds 30 -- echo ok -n ${GUID}-parks-dev
 oc set probe dc/mlbparks --readiness --failure-threshold 3 --initial-delay-seconds 60 --get-url=http://:8080/ws/healthz/ -n ${GUID}-parks-dev
 
@@ -51,10 +51,10 @@ oc new-build --binary=true --name="nationalparks" openjdk18-openshift:latest -n 
 oc new-app ${GUID}-parks-dev/nationalparks:0.0-0 --name=nationalparks --allow-missing-imagestream-tags=true -n ${GUID}-parks-dev
 
 # Configure the applications using ConfigMaps.
-#cat ./Infrastructure/environments/MongoDB-dev.env  <(echo) ./Infrastructure/environments/Nationalparks-dev.env > ./Nationalparks-dev.map
-oc create configmap nationalparks-config --from-env-file=./Infrastructure/environments/MongoDB-dev.env -n ${GUID}-parks-dev
+cat ./Infrastructure/environments/MongoDB-dev.env  <(echo) ./Infrastructure/environments/Nationalparks-dev.env > ./Nationalparks-dev.map
+oc create configmap nationalparks-config --from-env-file=./Nationalparks-dev.map -n ${GUID}-parks-dev
 oc set env dc/nationalparks --from=configmap/nationalparks-config -n ${GUID}-parks-dev
-oc set env dc/nationalparks APPNAME="National Parks (Dev)"
+#oc set env dc/nationalparks APPNAME="National Parks (Dev)"
 oc set probe dc/nationalparks --liveness --failure-threshold 5 --initial-delay-seconds 30 -- echo ok -n ${GUID}-parks-dev
 oc set probe dc/nationalparks --readiness --failure-threshold 3 --initial-delay-seconds 60 --get-url=http://:8080/ws/healthz/ -n ${GUID}-parks-dev
 
@@ -78,11 +78,11 @@ oc new-build --binary=true --name="parksmap" openjdk18-openshift:latest -n ${GUI
 oc new-app ${GUID}-parks-dev/parksmap:0.0-0 --name=parksmap --allow-missing-imagestream-tags=true -n ${GUID}-parks-dev
 
 # Configure the applications using ConfigMaps.
-#cat ./Infrastructure/environments/MongoDB-dev.env  <(echo) ./Infrastructure/environments/ParksMap-dev.env > ./ParksMap-dev.map
-#oc create configmap parksmap-config --from-env-file=./ParksMap-dev.map -n ${GUID}-parks-dev
+cat ./Infrastructure/environments/MongoDB-dev.env  <(echo) ./Infrastructure/environments/ParksMap-dev.env > ./ParksMap-dev.map
+oc create configmap parksmap-config --from-env-file=./ParksMap-dev.map -n ${GUID}-parks-dev
 
-#oc set env dc/parksmap --from=configmap/parksmap-config -n ${GUID}-parks-dev
-oc set env dc/mlbparks APPNAME="ParksMap (Dev)"
+oc set env dc/parksmap --from=configmap/parksmap-config -n ${GUID}-parks-dev
+# oc set env dc/mlbparks APPNAME="ParksMap (Dev)"
 oc set probe dc/parksmap --liveness --failure-threshold 5 --initial-delay-seconds 30 -- echo ok -n ${GUID}-parks-dev
 oc set probe dc/parksmap --readiness --failure-threshold 3 --initial-delay-seconds 60 --get-url=http://:8080/ws/healthz/ -n ${GUID}-parks-dev
 
