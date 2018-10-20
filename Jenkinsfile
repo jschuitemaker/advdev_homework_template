@@ -92,24 +92,24 @@ pipeline {
         environment name: 'SETUP', value: 'true'
       }
       parallel {
-        stage("Setup Nexus") {
-          steps {
-            echo "Setting up Nexus"
-            sh "./Infrastructure/bin/setup_nexus.sh ${GUID}"
-          }
-        }
-        stage("Setup Sonarqube") {
-          steps {
-            echo "Setting up Sonarqube"
-            sh "./Infrastructure/bin/setup_sonar.sh ${GUID}"
-          }
-        }
-        stage("Setup Jenkins") {
-          steps {
-            echo "Setting up Jenkins"
-            sh "./Infrastructure/bin/setup_jenkins.sh ${GUID} ${REPO} ${CLUSTER}"
-          }
-        }
+        // stage("Setup Nexus") {
+        //   steps {
+        //     echo "Setting up Nexus"
+        //     sh "./Infrastructure/bin/setup_nexus.sh ${GUID}"
+        //   }
+        // }
+        // stage("Setup Sonarqube") {
+        //   steps {
+        //     echo "Setting up Sonarqube"
+        //     sh "./Infrastructure/bin/setup_sonar.sh ${GUID}"
+        //   }
+        // }
+        // stage("Setup Jenkins") {
+        //   steps {
+        //     echo "Setting up Jenkins"
+        //     sh "./Infrastructure/bin/setup_jenkins.sh ${GUID} ${REPO} ${CLUSTER}"
+        //   }
+        // }
         stage("Setup Development Project") {
           steps {
             echo "Setting up Development Project"
