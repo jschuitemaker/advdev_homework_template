@@ -73,6 +73,8 @@ oc set deployment-hook dc/nationalparks -n ${GUID}-parks-dev --post -c nationalp
 # Create build configurations in the development project.
 # TODO - Will need to change the imagestream name back to redhat-openjdk18-openshift:1.2
 oc new-build --binary=true --name="parksmap" registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift -n ${GUID}-parks-dev
+# policy view needed so this app can look up the backend pods
+oc policy add-role-to-user view --serviceaccount=default -n ${GUID}-parks-dev
 
 # Create deployment configurations in both the development and production projects.
 oc new-app ${GUID}-parks-dev/parksmap:0.0-0 --name=parksmap --allow-missing-imagestream-tags=true -n ${GUID}-parks-dev
