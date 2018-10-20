@@ -182,7 +182,8 @@ pipeline {
             error("MLBParks (Dev) returned unexpected name.")
           }
           // Test Dev ParksMap
-          def devParksMapRoute = sh(returnStdout: true, script: "curl parksmap-${GUID}-parks-dev.apps.${CLUSTER}/ws/appname/").trim()
+          // NOTE: hard coded URL here, because test script doesn't match my setup
+          def devParksMapRoute = sh(returnStdout: true, script: "curl parksmap-b60e-parks-dev.10.0.75.128.nip.io/ws/appname/").trim()
           echo "Dev ParksMap Route: " + devParksMapRoute
           // Check if the returned string contains "Parks Map (Dev)"
           if (devParksMapRoute.contains("ParksMap (Dev)")) {
