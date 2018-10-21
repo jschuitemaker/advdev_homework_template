@@ -90,8 +90,6 @@ oc set probe dc/parksmap --readiness --failure-threshold 3 --initial-delay-secon
 
 # this will create the services
 oc expose dc/parksmap --port 8080 -n ${GUID}-parks-dev
-
-# expose the above service as a route and mark it as type 'parksmap-backend' so the UI can discover this service
 oc expose svc/parksmap -n ${GUID}-parks-dev
 
 # The endpoint `/ws/data/load/` creates the data in the MongoDB database and will need to be called (preferably with a post-deployment-hook)
