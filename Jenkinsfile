@@ -136,40 +136,40 @@ pipeline {
     stage("First Pipeline Runs (from Green to Blue)") {
       failFast true
       parallel {
-        stage('First Pipeline run for Nationalparks Service') {
-          steps {
-            echo "Executing Initial Nationalparks Pipeline - BLUE deployment"
-            sh "oc start-build --wait=true nationalparks-pipeline -n ${GUID}-jenkins"
-          }
-        }
+        // stage('First Pipeline run for Nationalparks Service') {
+        //   steps {
+        //     echo "Executing Initial Nationalparks Pipeline - BLUE deployment"
+        //     sh "oc start-build --wait=true nationalparks-pipeline -n ${GUID}-jenkins"
+        //   }
+        // }
         stage('First Pipeline run for MLBParks Service') {
           steps {
             echo "Executing Initial MLBParks Pipeline - BLUE deployment"
             sh "oc start-build --wait=true mlbparks-pipeline -n ${GUID}-jenkins"
           }
         }
-        stage('First Pipeline run for ParksMap Service') {
-          steps {
-            echo "Executing Initial ParksMap Pipeline - BLUE deployment"
-            sh "oc start-build --wait=true parksmap-pipeline -n ${GUID}-jenkins"
-          }
-        }
+        // stage('First Pipeline run for ParksMap Service') {
+        //   steps {
+        //     echo "Executing Initial ParksMap Pipeline - BLUE deployment"
+        //     sh "oc start-build --wait=true parksmap-pipeline -n ${GUID}-jenkins"
+        //   }
+        // }
       }
     }
     stage('Test Parksmap in Dev') {
       steps {
         echo "Testing Parksmap Dev Application"
         script {
-          // Test Dev Nationalparks
-          def devNationalParksSvc = sh(returnStdout: true, script: "curl nationalparks.${GUID}-parks-dev.svc.cluster.local:8080/ws/info/").trim()
-          echo "Dev National Parks Service: " + devNationalParksSvc
-          // Check if the returned string contains "National Parks (Dev)"
-          if (devNationalParksSvc.contains("National Parks (Dev)")) {
-            echo "*** National Parks (Dev) validated successfully."
-          }
-          else {
-            error("National Parks (Dev) returned unexpected name.")
-          }
+          // // Test Dev Nationalparks
+          // def devNationalParksSvc = sh(returnStdout: true, script: "curl nationalparks.${GUID}-parks-dev.svc.cluster.local:8080/ws/info/").trim()
+          // echo "Dev National Parks Service: " + devNationalParksSvc
+          // // Check if the returned string contains "National Parks (Dev)"
+          // if (devNationalParksSvc.contains("National Parks (Dev)")) {
+          //   echo "*** National Parks (Dev) validated successfully."
+          // }
+          // else {
+          //   error("National Parks (Dev) returned unexpected name.")
+          // }
 
           // Test Dev MLBParks
           def devMLBParksSvc = sh(returnStdout: true, script: "curl mlbparks.${GUID}-parks-dev.svc.cluster.local:8080/ws/info/").trim()
@@ -181,17 +181,17 @@ pipeline {
           else {
             error("MLBParks (Dev) returned unexpected name.")
           }
-          // Test Dev ParksMap
-          // NOTE: hard coded URL here, because test script doesn't match my setup
-          def devParksMapRoute = sh(returnStdout: true, script: "curl parksmap-b60e-parks-dev.10.0.75.128.nip.io/ws/appname/").trim()
-          echo "Dev ParksMap Route: " + devParksMapRoute
-          // Check if the returned string contains "Parks Map (Dev)"
-          if (devParksMapRoute.contains("ParksMap (Dev)")) {
-            echo "*** Parks Map (Dev) validated successfully."
-          }
-          else {
-            error("ParksMap (Dev) returned unexpected name.")
-          }
+          // // Test Dev ParksMap
+          // // NOTE: hard coded URL here, because test script doesn't match my setup
+          // def devParksMapRoute = sh(returnStdout: true, script: "curl parksmap-b60e-parks-dev.10.0.75.128.nip.io/ws/appname/").trim()
+          // echo "Dev ParksMap Route: " + devParksMapRoute
+          // // Check if the returned string contains "Parks Map (Dev)"
+          // if (devParksMapRoute.contains("ParksMap (Dev)")) {
+          //   echo "*** Parks Map (Dev) validated successfully."
+          // }
+          // else {
+          //   error("ParksMap (Dev) returned unexpected name.")
+          // }
         }
       }
     }
