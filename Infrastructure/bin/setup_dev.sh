@@ -11,6 +11,8 @@ echo "Setting up Parks Development Environment in project ${GUID}-parks-dev"
 
 # Set up the correct permissions for Jenkins to manipulate objects in the development and production projects.
 oc policy add-role-to-user edit system:serviceaccount:${GUID}-jenkins:jenkins -n  ${GUID}-parks-dev
+# Add policy so that the prod project can pull image from dev
+oc policy add-role-to-group system:image-puller system:serviceaccounts:${GUID}-parks-prod -n ${GUID}-parks-dev
 
 # Set up a MongoDB database in the development project. (see README in MLBPARKS)
 # todo must use specific registry?! not sure.. see labs
