@@ -115,6 +115,23 @@ podTemplate(
     }
 
   } 
+
+  stage('Blue/Green Production Deployment') {
+    activeApp = sh(returnStdout: true, script: "oc get route mlbparks -n ${GUID}-mlbparks-prod -o jsonpath='{ .spec.to.name }'").trim()
+    if (activeApp == "mlbparks-green") {
+      destApp = "mlbparks-blue"
+    }
+    echo "Active Application:      " + activeApp
+    echo "Destination Application: " + destApp
+
+    // Update the Image on the Production Deployment Config
+    sh "oc set image dc/${destApp} ${destApp}=docker-registry.default.svc:5000/${GUID}-mlbparks-dev/mlbparks:${prodTag} -n ${GUID}-mlbparks-prod"
+
+    // Deploy the inactive application.
+    openshiftDeploy depCfg: destApp, namespace: '${GUID}-mlbparks-prod', verbose: 'false', waitTime: '', waitUnit: 'sec'
+    openshiftVerifyDeployment depCfg: destApp, namespace: '${GUID}-mlbparks-prod', replicaCount: '1', verbose: 'false', verifyReplicaCount: 'true', waitTime: '', waitUnit: 'sec'
+    openshiftVerifyService namespace: '${GUID}-mlbparks-prod', svcName: destApp, verbose: 'false'
+  }
 }
 
 // Convenience Functions to read variables from the pom.xml

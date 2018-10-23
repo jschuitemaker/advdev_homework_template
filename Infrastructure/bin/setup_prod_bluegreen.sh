@@ -10,11 +10,7 @@ GUID=$1
 COLOR=$2
 echo "Setting up ${COLOR} Parks Production Environment in project ${GUID}-parks-prod"
 
-# Code to set up the parks production project. It will need a StatefulSet MongoDB, and two applications each (Blue/Green) for NationalParks, MLBParks and Parksmap.
-# The Green services/routes need to be active initially to guarantee a successful grading pipeline run.
 
-# Let jenkins do its thing
-oc policy add-role-to-user edit system:serviceaccount:${GUID}-jenkins:jenkins -n ${GUID}-parks-prod
 
 # Set up a MongoDB database in the production project
 # TODO 
@@ -38,9 +34,6 @@ oc set probe dc/mlbparks-${COLOR} --readiness --failure-threshold 3 --initial-de
 
 # this will create the services
 oc expose dc/mlbparks-${COLOR} --port 8080 -n ${GUID}-parks-prod
-
-# expose the above service as a route and mark it as type 'parksmap-backend' so the UI can discover this service
-oc expose svc/mlbparks-${COLOR} --labels=type=parksmap-backend -n ${GUID}-parks-prod
 
 # The endpoint `/ws/data/load/` creates the data in the MongoDB database and will need to be called (preferably with a post-deployment-hook)
 # once the Pod is running.

@@ -22,3 +22,6 @@ oc policy add-role-to-user edit system:serviceaccount:${GUID}-jenkins:jenkins -n
 ./Infrastructure/bin/setup_prod_bluegreen.sh ${GUID} green
 ./Infrastructure/bin/setup_prod_bluegreen.sh ${GUID} blue
 
+# expose the green service as a route 
+oc expose svc/mlbparks-green -name mlbparks -n ${GUID}-parks-prod
+
