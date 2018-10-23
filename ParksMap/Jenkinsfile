@@ -60,18 +60,18 @@ podTemplate(
 
       // Using Maven run the unit tests
       stage('Unit Tests') {
-        echo "Running Unit Tests"
-        dir("ParksMap") {
-         sh "${mvnCmd} test"
-        }
+        // echo "Running Unit Tests"
+        // dir("ParksMap") {
+        //  sh "${mvnCmd} test"
+        // }
       }    
   
       // Code analysis
       stage('Code Analysis') {
-        echo "Running Code Analysis"
-        dir("ParksMap") {
-         sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube.${GUID}-sonarqube.${CLUSTER}:9000/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
-        }
+        // echo "Running Code Analysis"
+        // dir("ParksMap") {
+        //  sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube.${GUID}-sonarqube.${CLUSTER}:9000/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"      
+        // }
       }    
 
       // Publish the built jar file to Nexus
