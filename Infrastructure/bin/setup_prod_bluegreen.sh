@@ -35,7 +35,14 @@ oc set probe dc/mlbparks-${COLOR} --readiness --failure-threshold 3 --initial-de
 # this will create the services
 oc expose dc/mlbparks-${COLOR} --port 8080 -n ${GUID}-parks-prod
 
+# expose the green service as a route 
+if [ $COLOR = 'green' ]
+then
+    oc expose service mlbparks-green -l name=mlbparks --name=mlbparks -n ${GUID}-parks-prod
+fi
+
 # The endpoint `/ws/data/load/` creates the data in the MongoDB database and will need to be called (preferably with a post-deployment-hook)
 # once the Pod is running.
-oc set deployment-hook dc/mlbparks-${COLOR}  -n ${GUID}-parks-prod --post -c mlbparks --failure-policy=abort -- curl http://$(oc get route mlbparks-${COLOR} -n ${GUID}-parks-prod -o jsonpath='{ .spec.host }')/ws/data/load/
+oc set deployment-hook dc/mlbparks-${COLOR}  -n ${GUID}-parks-prod --post -c mlbparks --failure-policy=abort -- curl http://$(oc get route mlbparks -n ${GUID}-parks-prod -o jsonpath='{ .spec.host }')/ws/data/load/
+
 
