@@ -110,12 +110,12 @@ pipeline {
         //     sh "./Infrastructure/bin/setup_jenkins.sh ${GUID} ${REPO} ${CLUSTER}"
         //   }
         // }
-        stage("Setup Development Project") {
-          steps {
-            echo "Setting up Development Project"
-            sh "./Infrastructure/bin/setup_dev.sh ${GUID}"
-          }
-        }
+        // stage("Setup Development Project") {
+        //   steps {
+        //     echo "Setting up Development Project"
+        //     sh "./Infrastructure/bin/setup_dev.sh ${GUID}"
+        //   }
+        // }
         stage("Setup Production Project") {
           steps {
             echo "Setting up Production Project"
