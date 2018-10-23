@@ -123,7 +123,8 @@ podTemplate(
       echo "Destination Application: " + destApp
 
       // Update the Image on the Production Deployment Config
-      sh "oc set image dc/${destApp} ${destApp}=docker-registry.default.svc:5000/${GUID}-parks-dev/mlbparks:${prodTag} -n ${GUID}-parks-prod"
+      // TODO do not use IP
+      sh "oc set image dc/${destApp} ${destApp}=172.30.1.1:5000/${GUID}-parks-dev/mlbparks:${prodTag} -n ${GUID}-parks-prod"
 
       // Deploy the inactive application.
       openshiftDeploy depCfg: destApp, namespace: '${GUID}-parks-prod', verbose: 'false', waitTime: '', waitUnit: 'sec'
