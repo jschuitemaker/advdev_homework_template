@@ -20,5 +20,6 @@ oc policy add-role-to-user edit system:serviceaccount:${GUID}-jenkins:jenkins -n
 # TODO 
 
 # important, setup green first
+chmod +x ./Infrastructure/bin/setup_prod_bluegreen.sh
 ./Infrastructure/bin/setup_prod_bluegreen.sh ${GUID} green
 ./Infrastructure/bin/setup_prod_bluegreen.sh ${GUID} blue
