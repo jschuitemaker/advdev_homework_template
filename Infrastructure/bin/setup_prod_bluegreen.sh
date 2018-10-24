@@ -19,7 +19,7 @@ echo "Setting up ${COLOR} Parks Production Environment in project ${GUID}-parks-
 
 # Create deployment configurations
 # here we use the initial imagestream mlbparks:0.0 from the DEVELOPMENT project
-oc new-app ${GUID}-parks-dev/mlbparks:0.0 --name=mlbparks-${COLOR} --allow-missing-imagestream-tags=true -n ${GUID}-parks-prod
+oc new-app ${GUID}-parks-dev/mlbparks:0.0-0 --name=mlbparks-${COLOR} --allow-missing-imagestream-tags=true -n ${GUID}-parks-prod
 
 # remove triggers to prevent automatic deployment when there is a new dev image
 oc set triggers dc/mlbparks-${COLOR} --remove-all -n ${GUID}-parks-prod
@@ -55,7 +55,7 @@ oc new-app ${GUID}-parks-dev/nationalparks:0.0-0 --name=nationalparks-${COLOR} -
 oc set triggers dc/mlbparks-${COLOR} --remove-all -n ${GUID}-parks-prod
 
 # Configure the applications using ConfigMaps.
-cat ./Infrastructure/environments/MongoDB-prod.env  <(echo) ./Infrastructure/environments/Nationalparks-prod.env > ./Nationalparks-${COLOR}-prod.map
+cat ./Infrastructure/environments/MongoDB-prod.env  <(echo) ./Infrastructure/environments/Nationalparks-${COLOR}-prod.env > ./Nationalparks-${COLOR}-prod.map
 oc create configmap nationalparks-${COLOR}-config --from-env-file=./Nationalparks-${COLOR}-prod.map -n ${GUID}-parks-prod
 oc set env dc/nationalparks-${COLOR} --from=configmap/nationalparks-${COLOR}-config -n ${GUID}-parks-prod
 oc set probe dc/nationalparks-${COLOR} --liveness --failure-threshold 5 --initial-delay-seconds 30 -- echo ok -n ${GUID}-parks-prod

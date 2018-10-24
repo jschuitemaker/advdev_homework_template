@@ -53,10 +53,10 @@ podTemplate(
 
       // Using Maven run the unit tests
       stage('Unit Tests') {
-        echo "Running Unit Tests"
-        dir("Nationalparks") {
-         sh "${mvnCmd} test"
-        }
+        // echo "Running Unit Tests"
+        // dir("Nationalparks") {
+        //  sh "${mvnCmd} test"
+        // }
       }    
   
       // Code analysis
@@ -69,10 +69,10 @@ podTemplate(
 
       // Publish the built jar file to Nexus
       stage('Publish to Nexus') {
-        // echo "Publish to Nexus"
-        // dir("Nationalparks") {
-        //   sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3.${GUID}-nexus.${CLUSTER}:8081/repository/releases"
-        // }
+        echo "Publish to Nexus"
+        dir("Nationalparks") {
+          sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3.${GUID}-nexus.${CLUSTER}:8081/repository/releases"
+        }
       }
 
       // Build the OpenShift Image in OpenShift and tag it.
