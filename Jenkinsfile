@@ -217,12 +217,13 @@ pipeline {
           if (blueMLBParksSvc.contains("MLB Parks (Blue)")) {
             echo "*** MLB Parks (Blue) validated successfully."
           }
-          else {
+          else {  
             error("MLB Parks (Blue) returned unexpected name.")
           }
 
-          // Test Blue ParksMap
-          def parksMapRoute = sh(returnStdout: true, script: "curl parksmap-${GUID}-parks-prod.apps.${CLUSTER}/ws/appname/").trim()
+          // Test Blue ParksMap 
+          // NOTE: Hack to make it work locally
+          def parksMapRoute = sh(returnStdout: true, script: "curl parksmap-b60e-parks-prod.10.0.75.128.nip.io/ws/appname/").trim()
           // Check if the returned string contains "Parks Map (Blue)"
           echo "ParksMap Route: " + parksMapRoute
           if (parksMapRoute.contains("ParksMap (Blue)")) {
@@ -284,7 +285,7 @@ pipeline {
           }
 
           // Test ParksMap
-          def parksMapRoute = sh(returnStdout: true, script: "curl parksmap-${GUID}-parks-prod.apps.${CLUSTER}/ws/appname/").trim()
+          def parksMapRoute = sh(returnStdout: true, script: "curl parksmap-b60e-parks-prod.10.0.75.128.nip.io/ws/appname/").trim()
           // Check if the returned string contains "Parks Map (Green)"
           echo "ParksMap Route: " + parksMapRoute
           if (parksMapRoute.contains("ParksMap (Green)")) {
