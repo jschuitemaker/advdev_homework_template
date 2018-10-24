@@ -18,3 +18,11 @@ echo "Resetting Parks Production Environment in project ${GUID}-parks-prod to Gr
 # rollout followed by a Green rollout.
 
 # To be Implemented by Student
+
+# recreate the routes to make sure that GREEN is active
+oc delete route mlbparks -n ${GUID}-parks-prod
+oc delete route nationalparks -n ${GUID}-parks-prod
+oc delete route parksmap -n ${GUID}-parks-prod
+oc expose service nationalparks-green --name=nationalparks -n ${GUID}-parks-prod
+oc expose service mlbparks-green --name=mlbparks -n ${GUID}-parks-prod
+oc expose service parksmap-green --name=parksmap -n ${GUID}-parks-prod
