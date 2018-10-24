@@ -116,7 +116,7 @@ pipeline {
         //     sh "./Infrastructure/bin/setup_dev.sh ${GUID}"
         //   }
         // }
-        // stage("Setup Production Project") {
+        stage("Setup Production Project") {
           steps {
             echo "Setting up Production Project"
             sh "./Infrastructure/bin/setup_prod.sh ${GUID}"
