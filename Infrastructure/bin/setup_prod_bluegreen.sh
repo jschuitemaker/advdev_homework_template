@@ -50,7 +50,7 @@ oc set deployment-hook dc/mlbparks-${COLOR}  -n ${GUID}-parks-prod --post -c mlb
 oc new-app ${GUID}-parks-dev/nationalparks:0.0-0 --name=nationalparks-${COLOR} --allow-missing-imagestream-tags=true -n ${GUID}-parks-prod
 
 # remove triggers to prevent automatic deployment when there is a new dev image
-oc set triggers dc/mlbparks-${COLOR} --remove-all -n ${GUID}-parks-prod
+oc set triggers dc/nationalparks-${COLOR} --remove-all -n ${GUID}-parks-prod
 
 # Configure the applications using ConfigMaps.
 cat ./Infrastructure/environments/MongoDB-prod.env  <(echo) ./Infrastructure/environments/Nationalparks-${COLOR}-prod.env > ./Nationalparks-${COLOR}-prod.map
@@ -77,6 +77,9 @@ oc set deployment-hook dc/nationalparks-${COLOR} -n ${GUID}-parks-prod --post -c
 
 # Create deployment configurations in both the development and production projects.
 oc new-app ${GUID}-parks-dev/parksmap:0.0-0 --name=parksmap-${COLOR} --allow-missing-imagestream-tags=true -n ${GUID}-parks-prod
+
+# remove triggers to prevent automatic deployment when there is a new dev image
+oc set triggers dc/parksmap-${COLOR} --remove-all -n ${GUID}-parks-prod
 
 # Configure the applications using ConfigMaps.
 cat ./Infrastructure/environments/MongoDB-prod.env  <(echo) ./Infrastructure/environments/ParksMap-${COLOR}-prod.env > ./ParksMap-${COLOR}-prod.map
