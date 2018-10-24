@@ -104,6 +104,16 @@ podTemplate(
         openshiftVerifyService namespace: '${GUID}-parks-dev', svcName: 'parksmap', verbose: 'false'
       }
 
+    stage('Copy Image to Nexus Docker Registry') {
+      echo "Copy image to Nexus Docker Registry"
+
+      // TODO not sure if i need to tag it in Nexus with prodTag or devTag..
+      sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds openshift:\$(oc whoami -t) --dest-creds admin:admin123 docker://docker-registry.default.svc.cluster.local:5000/${GUID}-parks-dev/parksmap:${devTag} docker://nexus-registry.${GUID}-nexus.svc.cluster.local:5000/parksmap:${devTag}"
+
+      // Tag the built image with the production tag.
+      openshiftTag alias: 'false', destStream: 'parksmap', destTag: prodTag, destinationNamespace: '${GUID}-parks-dev', namespace: '${GUID}-parks-dev', srcStream: 'parksmap', srcTag: devTag, verbose: 'false'
+    }
+
       stage('Blue/Green Production Deployment') {
         activeApp = sh(returnStdout: true, script: "oc get route parksmap -n ${GUID}-parks-prod -o jsonpath='{ .spec.to.name }'").trim()
         if (activeApp == "parksmap-green") {
