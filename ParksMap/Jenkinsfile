@@ -126,6 +126,10 @@ podTemplate(
         // TODO do not use IP
         sh "oc set image dc/${destApp} ${destApp}=172.30.1.1:5000/${GUID}-parks-dev/parksmap:${prodTag} -n ${GUID}-parks-prod"
 
+        // recreate the route
+        sh "oc delete route parksmap -n ${GUID}-parks-prod"
+        sh "oc expose service ${destApp} --name=parksmap -n ${GUID}-parks-prod"
+
         // Deploy the inactive application.
         openshiftDeploy depCfg: destApp, namespace: '${GUID}-parks-prod', verbose: 'false', waitTime: '', waitUnit: 'sec'
         openshiftVerifyDeployment depCfg: destApp, namespace: '${GUID}-parks-prod', replicaCount: '1', verbose: 'false', verifyReplicaCount: 'true', waitTime: '', waitUnit: 'sec'
