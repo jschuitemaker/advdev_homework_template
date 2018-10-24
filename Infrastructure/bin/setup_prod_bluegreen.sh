@@ -23,8 +23,8 @@ oc new-app ${GUID}-parks-dev/mlbparks:0.0-0 --name=mlbparks-${COLOR} --allow-mis
 oc set triggers dc/mlbparks-${COLOR} --remove-all -n ${GUID}-parks-prod
 
 # Configure the applications using ConfigMaps.
-cat ./Infrastructure/environments/MongoDB-prod.env  <(echo) ./Infrastructure/environments/MLBParks-${COLOR}-prod.env > ./MLBParks-${COLOR}-prod.map
-oc create configmap mlbparks-${COLOR}-config --from-env-file=./MLBParks-${COLOR}-prod.map -n ${GUID}-parks-prod
+cat ./Infrastructure/environments/MongoDB-prod.env  <(echo) ./Infrastructure/environments/MLBParks-${COLOR}-prod.env > ./MLBParks-tmp-prod.map
+oc create configmap mlbparks-${COLOR}-config --from-env-file=./MLBParks-tmp-prod.map -n ${GUID}-parks-prod
 oc set env dc/mlbparks-${COLOR} --from=configmap/mlbparks-${COLOR}-config -n ${GUID}-parks-prod
 
 oc set probe dc/mlbparks-${COLOR} --liveness --failure-threshold 5 --initial-delay-seconds 30 -- echo ok -n ${GUID}-parks-prod
@@ -53,8 +53,8 @@ oc new-app ${GUID}-parks-dev/nationalparks:0.0-0 --name=nationalparks-${COLOR} -
 oc set triggers dc/nationalparks-${COLOR} --remove-all -n ${GUID}-parks-prod
 
 # Configure the applications using ConfigMaps.
-cat ./Infrastructure/environments/MongoDB-prod.env  <(echo) ./Infrastructure/environments/Nationalparks-${COLOR}-prod.env > ./Nationalparks-${COLOR}-prod.map
-oc create configmap nationalparks-${COLOR}-config --from-env-file=./Nationalparks-${COLOR}-prod.map -n ${GUID}-parks-prod
+cat ./Infrastructure/environments/MongoDB-prod.env  <(echo) ./Infrastructure/environments/Nationalparks-${COLOR}-prod.env > ./Nationalparks-tmp-prod.map
+oc create configmap nationalparks-${COLOR}-config --from-env-file=./Nationalparks-tmp-prod.map -n ${GUID}-parks-prod
 oc set env dc/nationalparks-${COLOR} --from=configmap/nationalparks-${COLOR}-config -n ${GUID}-parks-prod
 oc set probe dc/nationalparks-${COLOR} --liveness --failure-threshold 5 --initial-delay-seconds 30 -- echo ok -n ${GUID}-parks-prod
 oc set probe dc/nationalparks-${COLOR} --readiness --failure-threshold 3 --initial-delay-seconds 60 --get-url=http://:8080/ws/healthz/ -n ${GUID}-parks-prod
@@ -82,8 +82,8 @@ oc new-app ${GUID}-parks-dev/parksmap:0.0-0 --name=parksmap-${COLOR} --allow-mis
 oc set triggers dc/parksmap-${COLOR} --remove-all -n ${GUID}-parks-prod
 
 # Configure the applications using ConfigMaps.
-cat ./Infrastructure/environments/MongoDB-prod.env  <(echo) ./Infrastructure/environments/ParksMap-${COLOR}-prod.env > ./ParksMap-${COLOR}-prod.map
-oc create configmap parksmap-${COLOR}-config --from-env-file=./ParksMap-${COLOR}-prod.map -n ${GUID}-parks-prod
+cat ./Infrastructure/environments/MongoDB-prod.env  <(echo) ./Infrastructure/environments/ParksMap-${COLOR}-prod.env > ./ParksMap-tmp-prod.map
+oc create configmap parksmap-${COLOR}-config --from-env-file=./ParksMap-tmp-prod.map -n ${GUID}-parks-prod
 oc set env dc/parksmap-${COLOR} --from=configmap/parksmap-${COLOR}-config -n ${GUID}-parks-prod
 oc set probe dc/parksmap-${COLOR} --liveness --failure-threshold 5 --initial-delay-seconds 30 -- echo ok -n ${GUID}-parks-prod
 oc set probe dc/parksmap-${COLOR} --readiness --failure-threshold 3 --initial-delay-seconds 60 --get-url=http://:8080/ws/healthz/ -n ${GUID}-parks-prod
