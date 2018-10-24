@@ -10,8 +10,6 @@ GUID=$1
 COLOR=$2
 echo "Setting up ${COLOR} Parks Production Environment in project ${GUID}-parks-prod"
 
-
-
 # Set up a MongoDB database in the production project
 # TODO 
 
