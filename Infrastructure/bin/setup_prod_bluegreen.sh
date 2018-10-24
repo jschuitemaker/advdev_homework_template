@@ -96,4 +96,3 @@ if [ $COLOR = 'green' ]
 then
     oc expose service parksmap-green --name=parksmap -n ${GUID}-parks-prod
 fi
-
