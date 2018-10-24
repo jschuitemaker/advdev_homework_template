@@ -82,7 +82,7 @@ pipeline {
         environment name: 'SETUP', value: 'true'
       }
       steps {
-        // echo "Creating Projects"
+        echo "Creating Projects"
         // sh "./Infrastructure/bin/setup_projects.sh ${GUID} ${USER}"
       }
     }
