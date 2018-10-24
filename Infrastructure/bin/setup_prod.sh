@@ -19,6 +19,7 @@ oc policy add-role-to-user edit system:serviceaccount:${GUID}-jenkins:jenkins -n
 # Set up a MongoDB cluster in the production project
 oc create -f ./Infrastructure/templates/mongo.yaml
 
+
 # important, setup green first
 chmod +x ./Infrastructure/bin/setup_prod_bluegreen.sh
 ./Infrastructure/bin/setup_prod_bluegreen.sh ${GUID} green
